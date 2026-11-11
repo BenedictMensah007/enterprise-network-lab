@@ -44,3 +44,13 @@ I set up DHCP on both domain controllers and configured failover between them, s
    ![DHCP failover](screenshots/08-dhcp-failover.png)
    ![Scope on DC2](screenshots/09-dhcp-scope-on-dc2.png)
 
+## Failover test
+
+I tested the DHCP failover by shutting down DC01 while DC2 stayed on.
+
+* DC2 moved to PartnerDown and kept serving the network
+* When DC01 came back it stayed in RecoverWait for one hour, which is the Maximum Client Lead Time. This stops the two servers handing out the same address.
+* After the hour, both servers returned to Normal
+
+![Partner down](screenshots/12-failover-partner-down.png)
+![Recovered](screenshots/14-failover-recovered.png)
