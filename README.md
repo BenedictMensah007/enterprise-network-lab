@@ -54,3 +54,8 @@ I tested the DHCP failover by shutting down DC01 while DC2 stayed on.
 
 ![Partner down](screenshots/12-failover-partner-down.png)
 ![Recovered](screenshots/14-failover-recovered.png)
+
+## GNS3 VM
+* GNS3 VM runs on Hyper-V on DevOps-Internal-Switch at 192.168.100.30
+* Nested virtualization enabled so QEMU based devices run (KVM support: True)
+* Static IP used so the GNS3 client always finds the server
