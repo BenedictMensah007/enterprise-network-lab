@@ -59,3 +59,19 @@ I tested the DHCP failover by shutting down DC01 while DC2 stayed on.
 * GNS3 VM runs on Hyper-V on DevOps-Internal-Switch at 192.168.100.30
 * Nested virtualization enabled so QEMU based devices run (KVM support: True)
 * Static IP used so the GNS3 client always finds the server
+
+
+## First GNS3 topology
+
+I connected a GNS3 topology to the lab network through a Cloud node bound to the GNS3 VM's eth0, which sits on DevOps-Internal-Switch.
+
+* Topology: Cloud node, Ethernet switch, one VPCS test PC
+* The VPCS requested an address with "ip dhcp" and received a lease from the DHCP server on DC2
+* I confirmed the lease on the server with Get-DhcpServerv4Lease
+
+### Problems I hit and how I fixed them
+* Hyper-V drops frames from unknown MAC addresses, so I enabled MAC address spoofing on the GNS3 VM adapter.
+* The host reached 95% RAM, so I shut down unused VMs before building.
+
+![Topology](screenshots/17-gns3-topology.png)
+![VPCS lease](screenshots/18-vpcs-dhcp-lease.png)
