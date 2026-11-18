@@ -1,0 +1,9 @@
+*.image
+*.bin
+*.img
+*.qcow2
+*.vmdk
+*.vhd
+*.vhdx
+*.iso
+*.zip
