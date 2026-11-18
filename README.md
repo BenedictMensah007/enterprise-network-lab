@@ -75,3 +75,9 @@ I connected a GNS3 topology to the lab network through a Cloud node bound to the
 
 ![Topology](screenshots/17-gns3-topology.png)
 ![VPCS lease](screenshots/18-vpcs-dhcp-lease.png)
+
+
+## Images and appliances
+* Imported Cisco 7200 routers (Dynamips), MikroTik CHR and Alpine Linux into GNS3
+* The GNS3 VM has a second adapter on the Default Switch so it can download appliances, while lab traffic stays on the isolated internal switch
+* Images are not stored in this repo (excluded with .gitignore)
