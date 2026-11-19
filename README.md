@@ -112,7 +112,7 @@ I split the lab network into one VLAN per department and made R1 route between t
 ![DHCP scopes per VLAN](screenshots/25-dhcp-scopes-per-vlan.png)
 ![Alpine Finance lease](screenshots/24-alpine-finance-lease.png)
 ![Alpine HR lease](screenshots/26-alpine-hr-lease.png)
-![Alpine IT lease](screenshots/24-alpine-it-lease.png)
+![Alpine IT lease](screenshots/27-alpine-it-lease.png)
 
 ### Problems I hit and how I fixed them
 * After a restart, GNS3 said it could not find the GNS3 VM. Hyper-V only shows its VMs to administrators, so I ran GNS3 as administrator.
