@@ -81,3 +81,45 @@ I connected a GNS3 topology to the lab network through a Cloud node bound to the
 * Imported Cisco 7200 routers (Dynamips), MikroTik CHR and Alpine Linux into GNS3
 * The GNS3 VM has a second adapter on the Default Switch so it can download appliances, while lab traffic stays on the isolated internal switch
 * Images are not stored in this repo (excluded with .gitignore)
+
+## Department VLANs and DHCP
+
+I split the lab network into one VLAN per department and made R1 route between them. DHCP is relayed from R1 to the servers, so each department gets addresses from its own scope.
+
+### Design
+
+| VLAN | Department | Subnet | Gateway (R1) |
+|---|---|---|---|
+| 10 | Finance | 192.168.10.0/24 | 192.168.10.1 |
+| 20 | HR | 192.168.20.0/24 | 192.168.20.1 |
+| 30 | IT | 192.168.30.0/24 | 192.168.30.1 |
+| 99 | Management | 192.168.99.0/24 | 192.168.99.1 |
+| None | Servers | 192.168.100.0/24 | 192.168.100.254 |
+
+* R1 (Cisco 7200) does inter VLAN routing using subinterfaces on one trunk link (router on a stick)
+* SW-ACCESS1 (MikroTik CHR) is the access switch, with a trunk to R1 and one access port per department
+* Each Alpine Linux test PC sits on an access port in its own VLAN
+* R1 relays DHCP requests to both domain controllers (DC2 and DC01) using ip helper-address
+* DC2 has one DHCP scope per department, with the VLAN gateway, both DNS servers and the lab.local domain name as options
+* The Servers network now uses R1 as its gateway, so DC2 can reply to every VLAN
+
+### Test results
+* Alpine1 (Finance) received an address from the 192.168.10.0 scope
+* Alpine2 (HR) received an address from the 192.168.20.0 scope
+* Alpine3 (IT) received an address from the 192.168.30.0 scope
+* Each client could ping its gateway on R1 and the DHCP server on DC2
+
+![DHCP scopes per VLAN](screenshots/25-dhcp-scopes-per-vlan.png)
+![Alpine Finance lease](screenshots/24-alpine-finance-lease.png)
+![Alpine HR lease](screenshots/26-alpine-hr-lease.png)
+![Alpine IT lease](screenshots/24-alpine-it-lease.png)
+
+### Problems I hit and how I fixed them
+* After a restart, GNS3 said it could not find the GNS3 VM. Hyper-V only shows its VMs to administrators, so I ran GNS3 as administrator.
+* The Cloud node was lost after the restart, so I rebuilt it and bound it to eth0 only.
+* The DHCP replies from DC2 would not have reached the new VLANs while its default gateway pointed at my host PC. I changed the gateway to R1.
+
+### Not done yet
+* The new scopes still need to be added to the DHCP failover relationship between DC01 and DC2
+* ACLs between VLANs, so departments cannot reach each other
+* Redundancy, QoS and 802.1X authentication
