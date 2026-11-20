@@ -1,8 +1,10 @@
-# enterprise-network-lab
+﻿# enterprise-network-lab
+
+A Hyper-V and GNS3 lab where I build a three tier enterprise network step by step: Active Directory with two domain controllers, DHCP failover, department VLANs, and later QoS and 802.1X. Each section lists what I built, what broke, and how I fixed it.
 
 
 
-\## DHCP
+## DHCP
 
 
 
@@ -10,35 +12,35 @@ I set up DHCP on both domain controllers and configured failover between them, s
 
 
 
-\### Design
+### Design
 
-\* Scope: 192.168.100.100 to 192.168.100.200 on the 192.168.100.0/24 network
+* Scope: 192.168.100.100 to 192.168.100.200 on the 192.168.100.0/24 network
 
-\* Server addresses (.10 and .11) sit outside the scope so they never get handed out
+* Server addresses (.10 and .11) sit outside the scope so they never get handed out
 
-\* Options given to clients: default gateway, both DNS servers (DC01 and DC2), and the lab.local domain name
+* Options given to clients: default gateway, both DNS servers (DC01 and DC2), and the lab.local domain name
 
-\* Both servers are authorized in Active Directory
-
-
-
-\### Failover
-
-\* Mode: hot standby
-
-\* DC01 is the active server and DC2 is the standby
-
-\* The two servers share the scope settings and the list of leased addresses, so DC2 can continue from where DC01 stopped
-
-\* I chose hot standby because my host only has 16 GB of RAM, so DC2 does not need to run all the time
+* Both servers are authorized in Active Directory
 
 
 
-\### Problems I hit and how I fixed them
+### Failover
 
-\* A mistyped authorization command created a wrong entry (DC01 name with DC2's IP). I found it with Get-DhcpServerInDC and removed it with Remove-DhcpServerInDC.
+* Mode: hot standby
 
-\* The scope was missing the router option and listed only one DNS server. I corrected both so clients would still resolve names when DC01 is offline.
+* DC01 is the active server and DC2 is the standby
+
+* The two servers share the scope settings and the list of leased addresses, so DC2 can continue from where DC01 stopped
+
+* I chose hot standby because my host only has 16 GB of RAM, so DC2 does not need to run all the time
+
+
+
+### Problems I hit and how I fixed them
+
+* A mistyped authorization command created a wrong entry (DC01 name with DC2's IP). I found it with Get-DhcpServerInDC and removed it with Remove-DhcpServerInDC.
+
+* The scope was missing the router option and listed only one DNS server. I corrected both so clients would still resolve names when DC01 is offline.
 
    ![DHCP scope](screenshots/07-dhcp-scope.png)
    ![DHCP failover](screenshots/08-dhcp-failover.png)
@@ -113,6 +115,7 @@ I split the lab network into one VLAN per department and made R1 route between t
 ![Alpine Finance lease](screenshots/24-alpine-finance-lease.png)
 ![Alpine HR lease](screenshots/26-alpine-hr-lease.png)
 ![Alpine IT lease](screenshots/27-alpine-it-lease.png)
+![DHCP leases per VLAN](screenshots/28-dhcp-leases-per-vlan.png)
 
 ### Problems I hit and how I fixed them
 * After a restart, GNS3 said it could not find the GNS3 VM. Hyper-V only shows its VMs to administrators, so I ran GNS3 as administrator.
